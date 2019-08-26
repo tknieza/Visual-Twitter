@@ -30,6 +30,11 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
 
 ## Todo
 
-- Find the best solution to scrape tweets
+- [x] Find best solution to scrape tweets
   - How many records per export?
   - Requests / per hour / per IP?
+  - What dependecies to use?
+- [ ] Serialize scrapped data into defined objects
+  - This includes: title, image and tweet urls, etc.
+- [ ] Visualize output
+- [ ] Make a design for the front-end
