@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import { Button, TextField, Container } from "@material-ui/core";
 
 class App extends React.Component {
   constructor() {
@@ -35,22 +36,43 @@ class App extends React.Component {
         tweets = $("img", $(".AdaptiveMedia", $(".tweet")));
       })
       .catch(() =>
-        console.log("Can’t access " + url + " response. Blocked by browser?")
+        console.log(`Can’t access ${url} response. Blocked by browser?`)
       )
       .finally(() => {
-        console.log(
-          tweets.toArray().map(item => {
+        this.setState({
+          tweets: tweets.toArray().map(item => {
             return item.attribs.src;
           })
-        );
+        });
       });
   }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const querry = event.target[0].value;
+    this.fetchTweets(querry);
+  };
 
   render() {
     return (
       <div className="App">
-        {/* Surface level testing */ this.fetchTweets("death grips")}
-        <h1>Visual Twitter</h1>
+        <Container>
+          <h1>Visual Twitter</h1>
+          <form onSubmit={this.handleSubmit}>
+            <TextField
+              id="standard-with-placeholder"
+              label="Search"
+              margin="dense"
+            />
+            <Button type="submit" variant="contained">
+              Button
+            </Button>
+          </form>
+          {this.state.tweets.length > 0 &&
+            this.state.tweets.map(tweet => (
+              <img src={tweet} alt="tweet" key={tweet.id}></img>
+            ))}
+        </Container>
       </div>
     );
   }
