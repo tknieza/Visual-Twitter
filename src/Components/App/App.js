@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { Box, Image } from "rebass";
 import "./App.css";
-import { Button, TextField, Container } from "@material-ui/core";
 
 const App = () => {
   const [tweets, setTweets] = useState([]);
@@ -56,29 +56,45 @@ const App = () => {
 
   return (
     <div className="App">
-      <Container>
+      <div>
         <h1>Visual Twitter</h1>
         <form onSubmit={handleSubmit}>
-          <TextField
-            id="standard-with-placeholder"
-            label="Search"
-            margin="dense"
-          />
-          <Button type="submit" variant="contained">
+          <input type="text" />
+          <button type="submit" variant="contained">
             Button
-          </Button>
+          </button>
         </form>
         {tweets.length > 0 &&
           tweets.map((tweet, index) => (
-            <div key={index}>
+            <Box
+              key={index}
+              sx={{
+                maxWidth: 768,
+                mx: "auto",
+                px: 3,
+                py: 4
+              }}
+            >
               <p>{tweet.permaLink}</p>
               {tweet.images.length > 0 &&
-                tweet.images.map((image, index) => (
-                  <img src={image} alt="tweetImage" key={index} />
-                ))}
-            </div>
+                tweet.images.map((image, index) =>
+                  index === 0 ? (
+                    <Image
+                      src={image}
+                      key={index}
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 9999
+                      }}
+                    />
+                  ) : (
+                    <Image src={image} key={index} />
+                  )
+                )}
+            </Box>
           ))}
-      </Container>
+      </div>
     </div>
   );
 };
