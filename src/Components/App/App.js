@@ -1,16 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { Button, TextField, Container } from "@material-ui/core";
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      tweets: []
-    };
-  }
+const App = () => {
+  const [tweets, setTweets] = useState([]);
 
-  fetchTweets(querry) {
+  const fetchTweets = querry => {
     const cheerio = require("cheerio");
 
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
@@ -29,53 +24,63 @@ class App extends React.Component {
         // Loading in the response HTML from url
         const $ = cheerio.load(contents);
 
-        // TODO: Figure out how to serialize stuff's content
-        // console.log($(".AdaptiveMedia", $(".tweet")).toArray());
+        const tweetElements = $(".tweet");
 
-        // Getting all tweets containing an image
-        tweets = $("img", $(".AdaptiveMedia", $(".tweet")));
+        tweetElements.toArray().forEach((item, index) => {
+          tweets.push({
+            name: item.attribs["data-name"],
+            screenName: item.attribs["data-screen-name"],
+            userId: item.attribs["data-user-id"],
+            permaLink: item.attribs["data-permalink-path"],
+            images: $("img", item)
+              .toArray()
+              .map(item => {
+                return item.attribs.src;
+              })
+          });
+        });
       })
       .catch(() =>
         console.log(`Can’t access ${url} response. Blocked by browser?`)
       )
       .finally(() => {
-        this.setState({
-          tweets: tweets.toArray().map(item => {
-            return item.attribs.src;
-          })
-        });
+        setTweets(tweets);
       });
-  }
-
-  handleSubmit = event => {
-    event.preventDefault();
-    const querry = event.target[0].value;
-    this.fetchTweets(querry);
   };
 
-  render() {
-    return (
-      <div className="App">
-        <Container>
-          <h1>Visual Twitter</h1>
-          <form onSubmit={this.handleSubmit}>
-            <TextField
-              id="standard-with-placeholder"
-              label="Search"
-              margin="dense"
-            />
-            <Button type="submit" variant="contained">
-              Button
-            </Button>
-          </form>
-          {this.state.tweets.length > 0 &&
-            this.state.tweets.map(tweet => (
-              <img src={tweet} alt="tweet" key={tweet.id}></img>
-            ))}
-        </Container>
-      </div>
-    );
-  }
-}
+  const handleSubmit = event => {
+    event.preventDefault();
+    const querry = event.target[0].value;
+    fetchTweets(querry);
+  };
+
+  return (
+    <div className="App">
+      <Container>
+        <h1>Visual Twitter</h1>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="standard-with-placeholder"
+            label="Search"
+            margin="dense"
+          />
+          <Button type="submit" variant="contained">
+            Button
+          </Button>
+        </form>
+        {tweets.length > 0 &&
+          tweets.map((tweet, index) => (
+            <div key={index}>
+              <p>{tweet.permaLink}</p>
+              {tweet.images.length > 0 &&
+                tweet.images.map((image, index) => (
+                  <img src={image} alt="tweetImage" key={index} />
+                ))}
+            </div>
+          ))}
+      </Container>
+    </div>
+  );
+};
 
 export default App;
