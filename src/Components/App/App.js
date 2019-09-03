@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Image } from "rebass";
+import { Box, Image, Button, Card, Text, Heading } from "rebass";
+import { Label, Input } from "@rebass/forms";
 import "./App.css";
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
         console.log(`Can’t access ${url} response. Blocked by browser?`)
       )
       .finally(() => {
+        console.log(tweets, "Tweets");
         setTweets(tweets);
       });
   };
@@ -57,13 +59,32 @@ const App = () => {
   return (
     <div className="App">
       <div>
-        <h1>Visual Twitter</h1>
-        <form onSubmit={handleSubmit}>
-          <input type="text" />
-          <button type="submit" variant="contained">
+        <Box
+          as="form"
+          onSubmit={handleSubmit}
+          sx={{
+            maxWidth: 768,
+            mx: "auto",
+            px: 3,
+            py: 4
+          }}
+        >
+          <Heading fontSize={[5, 6]} color="primary">
+            Visual Twitter
+          </Heading>
+          <Box
+            sx={{
+              margin: "1rem 0"
+            }}
+          >
+            <Label htmlFor="search">Search</Label>
+            <Input type="text" id="search" name="search" />
+          </Box>
+
+          <Button type="submit" variant="contained">
             Button
-          </button>
-        </form>
+          </Button>
+        </Box>
         {tweets.length > 0 &&
           tweets.map((tweet, index) => (
             <Box
@@ -75,23 +96,45 @@ const App = () => {
                 py: 4
               }}
             >
-              <p>{tweet.permaLink}</p>
-              {tweet.images.length > 0 &&
-                tweet.images.map((image, index) =>
-                  index === 0 ? (
-                    <Image
-                      src={image}
-                      key={index}
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 9999
-                      }}
-                    />
-                  ) : (
-                    <Image src={image} key={index} />
-                  )
+              <Card>
+                <Button
+                  variant="outline"
+                  sx={{
+                    width: "100%",
+                    margin: "1rem 0"
+                  }}
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com${tweet.permaLink}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  <Image
+                    src={tweet.images[0]}
+                    key={index}
+                    sx={{
+                      borderRadius: 9999
+                    }}
+                  />
+                  <Text
+                    sx={{
+                      marginBottom: "1rem"
+                    }}
+                  >
+                    {tweet.name}
+                  </Text>
+                  <Text fontSize={11}>{tweet.permaLink}</Text>
+                </Button>
+                {tweet.images.map(
+                  (image, index) =>
+                    !image.includes("profile_image") &&
+                    !image.includes("emoji") &&
+                    !image.includes("hashflags") && (
+                      <Image src={image} key={index} />
+                    )
                 )}
+              </Card>
             </Box>
           ))}
       </div>
