@@ -1,6 +1,6 @@
 # Visual Twitter
 
-Twitter based Web app that retrieves queried images of latest tweets
+Web app which retrieves and displays queried images from Twitter's feeds.
 
 ## Table of Contents
 
@@ -34,7 +34,10 @@ Please contribute using [Github Flow](https://guides.github.com/introduction/flo
   - How many records per export?
   - Requests / per hour / per IP?
   - What dependecies to use?
-- [ ] Serialize scrapped data into defined objects
+- [x] Redirect to original tweet after clicking image
+- [x] Serialize scrapped data into defined objects
   - This includes: title, image and tweet urls, etc.
-- [ ] Visualize output
-- [ ] Make a design for the front-end
+- [x] Visualize output
+- [ ] Sort tweets that do not have media images
+- [ ] Finalize design of app front-end
+- [ ] Dark mode
