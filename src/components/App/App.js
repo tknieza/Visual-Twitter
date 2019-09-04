@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Heading } from "rebass";
-import Search from "../Search";
-import TweetsDisplay from "../TweetsDisplay";
-import fetchTweets from "../../Api/FetchTweets";
+import Search from "./Search";
+import TweetsDisplay from "./TweetsDisplay";
+import fetchTweets from "../../api/FetchTweets";
 
 const App = () => {
   const [tweets, setTweets] = useState([]);
