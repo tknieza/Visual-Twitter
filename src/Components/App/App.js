@@ -1,91 +1,28 @@
 import React, { useState } from "react";
 import { Box, Image, Button, Card, Text, Heading } from "rebass";
-import { Label, Input } from "@rebass/forms";
-import "./App.css";
+import Search from "../Search";
+import fetchTweets from "../../Api/FetchTweets";
 
 const App = () => {
   const [tweets, setTweets] = useState([]);
 
-  const fetchTweets = querry => {
-    const cheerio = require("cheerio");
-
-    const proxyurl = "https://cors-anywhere.herokuapp.com/";
-
-    const url = `https://twitter.com/search?q=${querry}&src=typd&f=image`; // site doesn’t send Access-Control-*
-
-    fetch(proxyurl + url, {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      }
-    })
-      .then(response => response.text())
-      .then(contents => {
-        // Loading in response HTML from url
-        const $ = cheerio.load(contents);
-
-        // Getting all tweets in the page
-        const tweetElements = $(".tweet");
-
-        // Serializing tweetElements into something readable
-        const serializedTweets = tweetElements.toArray().map(item => {
-          return {
-            name: item.attribs["data-name"],
-            screenName: item.attribs["data-screen-name"],
-            userId: item.attribs["data-user-id"],
-            permaLink: item.attribs["data-permalink-path"],
-            id: item.attribs["data-tweet-id"],
-            images: $("img", item)
-              .toArray()
-              .map(item => {
-                return item.attribs.src;
-              })
-          };
-        });
-
-        setTweets(serializedTweets);
-      })
-      .catch(() =>
-        console.log(`Can’t access ${url} response. Blocked by browser?`)
-      );
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    const querry = event.target[0].value;
-    fetchTweets(querry);
-  };
-
   return (
-    <div className="App">
-      <div>
-        <Box
-          as="form"
-          onSubmit={handleSubmit}
-          sx={{
-            maxWidth: 768,
-            mx: "auto",
-            px: 3,
-            py: 4
-          }}
-        >
-          <Heading fontSize={[5, 6]} color="primary">
-            Visual Twitter
-          </Heading>
-          <Box
-            sx={{
-              margin: "1rem 0"
-            }}
-          >
-            <Label htmlFor="search">Search</Label>
-            <Input type="text" id="search" name="search" />
-          </Box>
-
-          <Button type="submit" variant="contained">
-            Button
-          </Button>
-        </Box>
-        {tweets.length > 0 &&
+    <Box>
+      <Heading
+        fontSize={[5, 6]}
+        color="primary"
+        sx={{
+          maxWidth: 768,
+          mx: "auto",
+          p: 3,
+          textAlign: "center"
+        }}
+      >
+        Visual Twitter
+      </Heading>
+      <Search setTweets={setTweets} fetchTweets={fetchTweets} />
+      {tweets === null ||
+        (tweets.length > 0 &&
           tweets.map((tweet, index) => (
             <Box
               key={index}
@@ -136,9 +73,8 @@ const App = () => {
                 )}
               </Card>
             </Box>
-          ))}
-      </div>
-    </div>
+          )))}
+    </Box>
   );
 };
 
