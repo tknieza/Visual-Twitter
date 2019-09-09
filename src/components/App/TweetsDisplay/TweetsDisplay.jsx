@@ -6,7 +6,9 @@ const TweetsDisplay = ({ tweets }) => (
   <Box>
     {tweets === null ||
       (tweets.length > 0 &&
-        tweets.map((tweet, index) => <Tweet tweet={tweet} index={index} />))}
+        tweets.map((tweet, index) => (
+          <Tweet key={index} tweet={tweet} index={index} />
+        )))}
   </Box>
 );
 
